@@ -85,8 +85,8 @@ export default function SettingsModal({ isOpen, onClose, userType = 'student' })
         </div>
 
         <div className="settings-modal-body">
-          {/* Profile Section - Hidden for one-time users */}
-          {!isOneTimeUser && (
+          {/* Profile Section - Show if user has userData OR if they have a studentTag */}
+          {(userData || (userType === 'student' && anonymousTag)) && (
             <>
               <div className="settings-section-header">Profile</div>
               <div className="settings-section">

@@ -427,27 +427,29 @@ export default function LecturerPanelPage() {
 
                 {/* Action Footer */}
                 <div className="question-footer-lecturer">
-                  {q.status === 'rejected' ? (
-                    <>
-                      <button className="action-btn restore-btn" onClick={() => handleRestore(q._id)}>
-                        ♻️ Restore
-                      </button>
-                      <button className="action-btn permanent-delete-btn" onClick={() => handlePermanentDelete(q._id)}>
-                        🗑️ Delete Permanently
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      {q.status === 'pending' && (
-                        <button className="action-btn answer-btn" onClick={() => handleAnswer(q._id)}>
-                          ✅ Mark Answered
+                  <div className="action-buttons-lecturer">
+                    {q.status === 'rejected' ? (
+                      <>
+                        <button className="action-btn restore-btn" onClick={() => handleRestore(q._id)}>
+                          ♻️ Restore
                         </button>
-                      )}
-                      <button className="action-btn delete-btn" onClick={() => handleDelete(q._id)}>
-                        🗑️ Delete
-                      </button>
-                    </>
-                  )}
+                        <button className="action-btn permanent-delete-btn" onClick={() => handlePermanentDelete(q._id)}>
+                          🗑️ Delete Permanently
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {q.status === 'pending' && (
+                          <button className="action-btn answer-btn" onClick={() => handleAnswer(q._id)}>
+                            ✅ Mark Answered
+                          </button>
+                        )}
+                        <button className="action-btn delete-btn" onClick={() => handleDelete(q._id)}>
+                          🗑️ Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
