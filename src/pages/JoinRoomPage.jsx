@@ -23,13 +23,14 @@ export default function JoinRoomPage() {
 
       if (response.success) {
         const roomData = response.data;
-        navigate(`/room/${roomData._id}`, {
+        // Navigate to room with correct field names from backend
+        navigate(`/room/${roomData.roomId}`, {
           state: {
-            roomId: roomData._id,
+            roomId: roomData.roomId,
             roomCode: roomData.roomCode,
-            questionsVisible: roomData.questionsVisible,
             roomName: roomData.roomName,
             lecturerName: roomData.lecturerName,
+            questionsVisible: roomData.questionsVisible,
             status: roomData.status
           }
         });

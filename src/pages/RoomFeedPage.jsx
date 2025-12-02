@@ -33,7 +33,9 @@ export default function RoomFeedPage() {
 
   const fetchQuestions = async (tag) => {
     try {
+      console.log('Fetching questions for room:', roomId, 'with tag:', tag || studentTag);
       const response = await questionAPI.getQuestions(roomId, tag || studentTag);
+      console.log('Questions response:', response);
       
       if (response.success) {
         const transformedQuestions = response.data.map(q => ({
@@ -48,10 +50,13 @@ export default function RoomFeedPage() {
           answer: q.answer
         }));
         setQuestions(transformedQuestions);
+      } else {
+        console.error('Failed to fetch questions:', response.message);
+        alert(`Unable to load questions: ${response.message || 'Please try again.'}`);
       }
     } catch (error) {
-      console.error('Error fetching questions:', error);
-      alert('Unable to load questions. Please try again.');
+      console.error('Error fetching questions:', error.response?.data || error.message || error);
+      alert(`Unable to load questions: ${error.response?.data?.message || error.message || 'Please try again.'}`);
     } finally {
       setLoading(false);
     }
@@ -133,15 +138,20 @@ export default function RoomFeedPage() {
 
     try {
       setSubmitting(true);
+      console.log('Submitting question:', questionText.trim(), 'to room:', roomId);
       const response = await questionAPI.askQuestion(questionText.trim(), roomId, roomCode);
+      console.log('Question response:', response);
       
       if (response.success) {
         setQuestionText('');
         setShowAskModal(false);
+      } else {
+        console.error('Failed to submit question:', response.message);
+        alert(`Failed to submit question: ${response.message || 'Please try again.'}`);
       }
     } catch (error) {
-      console.error('Error asking question:', error);
-      alert('Failed to submit question');
+      console.error('Error asking question:', error.response?.data || error.message || error);
+      alert(`Failed to submit question: ${error.response?.data?.message || error.message || 'Please try again.'}`);
     } finally {
       setSubmitting(false);
     }
