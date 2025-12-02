@@ -425,11 +425,8 @@ export default function LecturerPanelPage() {
                   </div>
                 )}
 
-                {q.isReported && (
-                  <div className="reported-badge">⚠️ Reported</div>
-                )}
-
-                <div className="action-buttons-lecturer">
+                {/* Action Footer */}
+                <div className="question-footer-lecturer">
                   {q.status === 'rejected' ? (
                     <>
                       <button className="action-btn restore-btn" onClick={() => handleRestore(q._id)}>

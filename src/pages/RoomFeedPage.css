@@ -443,6 +443,97 @@
   cursor: not-allowed;
 }
 
+/* Ask Question Modal */
+.ask-modal-content {
+  max-width: 500px;
+}
+
+.anonymous-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.anonymous-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.anonymous-text {
+  flex: 1;
+}
+
+.anonymous-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #6366F1;
+  margin-bottom: 4px;
+}
+
+.anonymous-description {
+  font-size: 13px;
+  color: #6B7280;
+  line-height: 1.4;
+}
+
+.input-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #9CA3AF;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.char-count {
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.tips-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.03) 100%);
+  border-left: 4px solid #10B981;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.tips-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tip-item {
+  font-size: 13px;
+  color: #6B7280;
+  line-height: 1.5;
+}
+
+.button-icon {
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+.modal-button-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Report Modal */
 .report-modal-content {
   max-width: 400px;

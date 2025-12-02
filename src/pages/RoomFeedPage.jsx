@@ -48,7 +48,15 @@ export default function RoomFeedPage() {
           )
         );
       } else {
-        alert(response.message || 'Unable to report question');
+        // If already reported, allow changing report type
+        if (response.message && response.message.includes('already reported')) {
+          const changeType = window.confirm(`You've already reported this question. Would you like to change the report type to ${reason}?`);
+          if (changeType) {
+            alert(`✅ Report updated: Changed to ${reason.toLowerCase()}`);
+          }
+        } else {
+          alert(response.message || 'Unable to report question');
+        }
       }
     } catch (error) {
       console.error('Error reporting question:', error);
@@ -348,19 +356,53 @@ export default function RoomFeedPage() {
       {/* Ask Question Modal */}
       {showAskModal && (
         <div className="modal-overlay" onClick={() => setShowAskModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content ask-modal-content" onClick={(e) => e.stopPropagation()}>
             <h2 className="modal-title">Ask a Question</h2>
-            <p className="modal-subtitle">Your question will be posted anonymously</p>
+            <p className="modal-subtitle">Your question will be posted anonymously. Be respectful and clear.</p>
+            
+            {/* Anonymous Badge */}
+            <div className="anonymous-badge">
+              <span className="anonymous-icon">🎭</span>
+              <div className="anonymous-text">
+                <div className="anonymous-title">You're Anonymous</div>
+                <div className="anonymous-description">Your identity will not be revealed to anyone</div>
+              </div>
+            </div>
+
             <textarea
               className="question-input"
               placeholder="Type your question here..."
               value={questionText}
               onChange={(e) => setQuestionText(e.target.value)}
-              rows={5}
+              rows={6}
               maxLength={500}
               autoFocus
             />
+            <div className="input-hint">
+              <span>Be specific and clear to get better answers</span>
+              <span className="char-count">{questionText.length} / 500</span>
+            </div>
+
+            {/* Tips Card */}
+            <div className="tips-card">
+              <div className="tips-title">💡 Tips for great questions:</div>
+              <div className="tips-list">
+                <div className="tip-item">• Be clear and specific</div>
+                <div className="tip-item">• Include context if needed</div>
+                <div className="tip-item">• Ask one question at a time</div>
+                <div className="tip-item">• Be respectful and constructive</div>
+              </div>
+            </div>
+
             <div className="modal-buttons">
+              <button
+                className="modal-button-submit"
+                onClick={handleAskQuestion}
+                disabled={submitting || !questionText.trim()}
+              >
+                <span className="button-icon">📤</span>
+                {submitting ? 'Submitting...' : 'Submit Anonymously'}
+              </button>
               <button
                 className="modal-button-cancel"
                 onClick={() => {
@@ -369,13 +411,6 @@ export default function RoomFeedPage() {
                 }}
               >
                 Cancel
-              </button>
-              <button
-                className="modal-button-submit"
-                onClick={handleAskQuestion}
-                disabled={submitting || !questionText.trim()}
-              >
-                {submitting ? 'Submitting...' : 'Submit'}
               </button>
             </div>
           </div>
