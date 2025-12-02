@@ -15,6 +15,13 @@ export default function LecturerPanelPage() {
   const [isRoomClosed, setIsRoomClosed] = useState(false);
   const [questionsVisible, setQuestionsVisible] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchQuestions();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     if (!roomId) {
@@ -294,7 +301,7 @@ export default function LecturerPanelPage() {
       <div className="top-header">
         <button className="back-icon" onClick={() => navigate('/my-rooms')}>←</button>
         <h1 className="page-title">Lecturer Panel</h1>
-        <button className="settings-icon" onClick={() => setShowSettings(true)}>⚙️</button>
+        <button className="settings-icon" onClick={() => setShowSettings(true)} title="Settings">⚙️</button>
       </div>
 
       <div className="panel-container">
@@ -375,6 +382,13 @@ export default function LecturerPanelPage() {
           </div>
         </div>
 
+        {/* Refresh Button */}
+        <div className="refresh-section">
+          <button className="refresh-button" onClick={handleRefresh} disabled={refreshing}>
+            {refreshing ? '⟳ Refreshing...' : '🔄 Refresh Questions'}
+          </button>
+        </div>
+
         {/* Questions List */}
         {getFilteredQuestions().length === 0 ? (
           <div className="empty-state-lecturer">
@@ -395,6 +409,12 @@ export default function LecturerPanelPage() {
                 </div>
                 
                 <div className="student-tag">Anonymous {q.studentTag}</div>
+                
+                {q.isReported && (
+                  <div className="reported-badge-container">
+                    <span className="reported-badge">🚩 Reported</span>
+                  </div>
+                )}
                 
                 <p className="question-text-lecturer">{q.question}</p>
 

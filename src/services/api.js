@@ -283,8 +283,16 @@ export const questionAPI = {
     return response.data;
   },
 
-  restoreQuestion: async (questionId) => {
-    const response = await api.put(`/questions/${questionId}/restore`);
+  upvoteQuestion: async (questionId) => {
+    const response = await api.put(`/questions/${questionId}/upvote`);
+    return response.data;
+  },
+
+  reportQuestion: async (questionId, studentTag, reason) => {
+    const response = await api.put(`/questions/${questionId}/report`, { 
+      studentTag,
+      reason 
+    });
     return response.data;
   },
 

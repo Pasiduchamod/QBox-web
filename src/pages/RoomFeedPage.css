@@ -15,13 +15,31 @@
 }
 
 .back-icon,
-.settings-icon {
+.settings-icon,
+.refresh-icon {
   background: none;
   border: none;
   color: white;
   font-size: 24px;
   cursor: pointer;
   padding: 8px;
+  transition: opacity 0.2s;
+}
+
+.refresh-icon:hover:not(:disabled),
+.settings-icon:hover {
+  opacity: 0.8;
+}
+
+.refresh-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .page-title {
@@ -232,6 +250,7 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  color: #111827;
   transition: all 0.2s;
 }
 
@@ -422,6 +441,61 @@
 .modal-button-submit:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Report Modal */
+.report-modal-content {
+  max-width: 400px;
+}
+
+.report-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: white;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.report-option:hover {
+  background-color: #F9FAFB;
+  border-color: #6366F1;
+}
+
+.report-option-icon {
+  font-size: 24px;
+}
+
+.report-option-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.cancel-option {
+  width: 100%;
+  padding: 14px;
+  background-color: #F3F4F6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.cancel-option:hover {
+  background-color: #E5E7EB;
+}
+
+.cancel-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6B7280;
 }
 
 /* Desktop Responsiveness */

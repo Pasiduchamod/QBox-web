@@ -18,6 +18,44 @@ export default function RoomFeedPage() {
   const [questionText, setQuestionText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchQuestions(studentTag);
+    setRefreshing(false);
+  };
+
+  const handleReport = (questionId) => {
+    setSelectedQuestionId(questionId);
+    setShowReportModal(true);
+  };
+
+  const submitReport = async (reason) => {
+    try {
+      const response = await questionAPI.reportQuestion(selectedQuestionId, studentTag, reason);
+      
+      setShowReportModal(false);
+      
+      if (response.success) {
+        alert(`✅ Reported: Question has been reported as ${reason.toLowerCase()}`);
+        // Update local state to mark as reported
+        setQuestions(prevQuestions =>
+          prevQuestions.map(q =>
+            q._id === selectedQuestionId ? { ...q, isReported: true } : q
+          )
+        );
+      } else {
+        alert(response.message || 'Unable to report question');
+      }
+    } catch (error) {
+      console.error('Error reporting question:', error);
+      alert('Unable to report question. Please try again.');
+      setShowReportModal(false);
+    }
+  };
 
   useEffect(() => {
     if (!roomCode) {
@@ -200,7 +238,7 @@ export default function RoomFeedPage() {
           ←
         </button>
         <h1 className="page-title">Q&A Feed</h1>
-        <button className="settings-icon" onClick={() => setShowSettings(true)}>⚙️</button>
+        <button className="settings-icon" onClick={() => setShowSettings(true)} title="Settings">⚙️</button>
       </div>
 
       <div className="room-feed-container">
@@ -244,6 +282,13 @@ export default function RoomFeedPage() {
           </div>
         </div>
 
+        {/* Refresh Button */}
+        <div className="refresh-section">
+          <button className="refresh-button" onClick={handleRefresh} disabled={refreshing}>
+            {refreshing ? '⟳ Refreshing...' : '🔄 Refresh Questions'}
+          </button>
+        </div>
+
         {/* Questions List */}
         {getFilteredQuestions().length === 0 ? (
           <div className="empty-state">
@@ -262,7 +307,7 @@ export default function RoomFeedPage() {
             {getFilteredQuestions().map((q) => (
               <div key={q.id} className="question-card">
                 <div className="question-header">
-                  {q.isMyQuestion && <span className="you-badge">👤 You</span>}
+                  {q.isMyQuestion && <span className="you-badge">You</span>}
                   {!q.isMyQuestion && <span className="student-tag">{q.studentTag}</span>}
                 </div>
                 <p className="question-text">{q.question}</p>
@@ -277,7 +322,13 @@ export default function RoomFeedPage() {
                     {q.status === 'pending' ? 'Pending' : 'Answered'}
                   </span>
                   {!q.isMyQuestion && (
-                    <button className="more-button">⋮</button>
+                    <button 
+                      className="more-button" 
+                      onClick={() => handleReport(q._id)}
+                      title="Report question"
+                    >
+                      ⋮
+                    </button>
                   )}
                 </div>
               </div>
@@ -327,6 +378,47 @@ export default function RoomFeedPage() {
                 {submitting ? 'Submitting...' : 'Submit'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="modal-overlay" onClick={() => setShowReportModal(false)}>
+          <div className="modal-content report-modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">Report Question</h2>
+            <p className="modal-subtitle">Why are you reporting this question?</p>
+            
+            <button
+              className="report-option"
+              onClick={() => submitReport('Spam')}
+            >
+              <span className="report-option-icon">🚫</span>
+              <span className="report-option-text">Spam</span>
+            </button>
+
+            <button
+              className="report-option"
+              onClick={() => submitReport('Inappropriate')}
+            >
+              <span className="report-option-icon">⚠️</span>
+              <span className="report-option-text">Inappropriate</span>
+            </button>
+
+            <button
+              className="report-option"
+              onClick={() => submitReport('Off-topic')}
+            >
+              <span className="report-option-icon">📌</span>
+              <span className="report-option-text">Off-topic</span>
+            </button>
+
+            <button
+              className="cancel-option"
+              onClick={() => setShowReportModal(false)}
+            >
+              <span className="cancel-text">Cancel</span>
+            </button>
           </div>
         </div>
       )}

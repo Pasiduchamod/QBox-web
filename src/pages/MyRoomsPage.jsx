@@ -104,9 +104,7 @@ export default function MyRoomsPage() {
               <button className="settings-icon-myrooms" onClick={() => setShowSettings(true)}>
                 ⚙️
               </button>
-              <button className="logout-button" onClick={handleLogout}>
-                🚪 Logout
-              </button>
+              <button className="logout-button" onClick={handleLogout}>Logout</button>
             </div>
           </div>
         </div>
