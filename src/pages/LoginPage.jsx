@@ -150,6 +150,14 @@ export default function LoginPage() {
             <span className="one-time-button-subtext">No account needed • Expires in 1 hour</span>
           </button>
         </div>
+
+        {/* Back Button */}
+        <button 
+          className="back-button"
+          onClick={() => navigate('/')}
+        >
+          Back
+        </button>
       </div>
 
       {/* Name Modal for One-Time Room */}
