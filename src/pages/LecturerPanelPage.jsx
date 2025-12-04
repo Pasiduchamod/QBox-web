@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { questionAPI, roomsAPI, getSocket, initSocket } from '../services/api';
 import SettingsModal from '../components/SettingsModal';
 import './LecturerPanelPage.css';
@@ -7,13 +7,15 @@ import './LecturerPanelPage.css';
 export default function LecturerPanelPage() {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { roomCode: navRoomCode, roomName: navRoomName, questionsVisible: navQuestionsVisible } = location.state || {};
   
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('pending');
   const [roomData, setRoomData] = useState(null);
   const [isRoomClosed, setIsRoomClosed] = useState(false);
-  const [questionsVisible, setQuestionsVisible] = useState(true);
+  const [questionsVisible, setQuestionsVisible] = useState(navQuestionsVisible ?? true);
   const [showSettings, setShowSettings] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -29,10 +31,20 @@ export default function LecturerPanelPage() {
       return;
     }
 
-    fetchRoomData();
-    fetchQuestions();
-    setupSocket();
+    const initRoom = async () => {
+      await fetchRoomData();
+      await fetchQuestions();
+    };
+
+    initRoom();
   }, [roomId]);
+
+  useEffect(() => {
+    // Setup socket after room data is available
+    if (roomData?.roomCode || navRoomCode) {
+      setupSocket();
+    }
+  }, [roomData, navRoomCode]);
 
   const fetchRoomData = async () => {
     try {
@@ -44,7 +56,17 @@ export default function LecturerPanelPage() {
       }
     } catch (error) {
       console.error('Error fetching room:', error);
-      alert('Unable to load room data');
+      // Use navigation state as fallback
+      if (navRoomCode && navRoomName) {
+        setRoomData({
+          roomCode: navRoomCode,
+          roomName: navRoomName,
+          questionsVisible: navQuestionsVisible ?? true,
+          status: 'active'
+        });
+      } else {
+        alert('Unable to load room data');
+      }
     }
   };
 
@@ -76,16 +98,21 @@ export default function LecturerPanelPage() {
 
   const setupSocket = () => {
     const socket = getSocket() || initSocket();
-    if (!roomData?.roomCode) return;
+    const roomCode = roomData?.roomCode || navRoomCode;
+    
+    if (!roomCode) {
+      console.log('No room code available for socket');
+      return;
+    }
 
     // Join room immediately
-    socket.emit('join-room', roomData.roomCode);
-    console.log('Joined room via socket:', roomData.roomCode);
+    socket.emit('join-room', roomCode);
+    console.log('Joined room via socket:', roomCode);
 
     // Rejoin room on reconnection
     socket.on('connect', () => {
-      console.log('Socket connected, rejoining room:', roomData.roomCode);
-      socket.emit('join-room', roomData.roomCode);
+      console.log('Socket connected, rejoining room:', roomCode);
+      socket.emit('join-room', roomCode);
     });
 
     socket.on('new-question', (question) => {
